@@ -1,31 +1,26 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 function ProductList() {
-  const [products, setProducts] = useState([]);  // hold product list
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/products')  // call your backend
-      .then(res => res.json())                   // convert response to JSON
-      .then(data => setProducts(data))           // save data into state
-      .catch(err => console.error("Error:", err));
-  }, []);  // run once when page loads
+    fetch('http://127.0.0.1:5000/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error("Error fetching products:", err));
+  }, []);
 
   return (
     <div>
-      <h2>All Products</h2>
-      {products.length === 0 ? (
-        <p>No products found.</p>
-      ) : (
-        <ul>
-          {products.map((product) => (
-            <li key={product.id}>
-              <strong>{product.name}</strong> – ${product.price}
-              <br />
-              {product.description}
-            </li>
-          ))}
-        </ul>
-      )}
+      {products.map((product) => (
+        <div key={product.id} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
+          <h3>{product.name} – ${product.price}</h3>
+          <p>{product.description}</p>
+          <Link to={`/edit/${product.id}`} style={{ marginRight: '1rem' }}>Edit</Link>
+          <Link to={`/delete/${product.id}`}>Delete</Link>
+        </div>
+      ))}
     </div>
   );
 }

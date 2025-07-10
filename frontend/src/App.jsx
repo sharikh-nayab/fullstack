@@ -1,22 +1,26 @@
-import { useEffect, useState } from 'react';
-import ProductList from './components/ProductList';
+import { Routes, Route, Link } from 'react-router-dom';
+import Home from '../pages/Home';
+import Products from '../pages/Products';
+import Add from '../pages/Add';
+import EditProduct from '../pages/EditProduct';
+import DeleteProduct from '../pages/DeleteProduct';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/message')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(err => console.error('Error fetching message:', err));
-  }, []);
-
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>React + Flask Fullstack App</h1>
-      <p style={{ color: 'gray', fontStyle: 'italic' }}>{message}</p>
-      <hr style={{ margin: '1rem 0' }} />
-      <ProductList />
+    <div style={{ padding: '2rem' }}>
+      <nav style={{ marginBottom: '2rem' }}>
+        <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
+        <Link to="/products" style={{ marginRight: '1rem' }}>Products</Link>
+        <Link to="/add">Add Product</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/add" element={<Add />} />
+        <Route path="/edit/:id" element={<EditProduct />} />
+        <Route path="/delete/:id" element={<DeleteProduct />} />
+      </Routes>
     </div>
   );
 }
