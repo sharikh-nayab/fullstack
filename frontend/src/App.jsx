@@ -4,15 +4,18 @@ import Products from '../pages/Products';
 import Add from '../pages/Add';
 import EditProduct from '../pages/EditProduct';
 import DeleteProduct from '../pages/DeleteProduct';
+import './index.css';
+
 
 function App() {
   return (
     <div style={{ padding: '2rem' }}>
-      <nav style={{ marginBottom: '2rem' }}>
-        <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
-        <Link to="/products" style={{ marginRight: '1rem' }}>Products</Link>
-        <Link to="/add">Add Product</Link>
+      <nav className="bg-blue-600 text-white p-4 rounded flex gap-4 mb-6">
+        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/products" className="hover:underline">Products</Link>
+        <Link to="/add" className="hover:underline">Add Product</Link>
       </nav>
+
 
       <Routes>
         <Route path="/" element={<Home />} />
