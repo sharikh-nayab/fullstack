@@ -37,7 +37,7 @@ A production-ready fullstack web application for managing products using:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/fullstack-product-manager.git
+git clone https://github.com/sharikh-nayab/fullstack.git
 cd fullstack
 
 cd backend
