@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-net
+
+  backend:
+    build: ./backend
+    container_name: flask-backend
+    environment:
+    - DB_NAME=${DB_NAME}
+    - DB_USER=${DB_USER}
+    - DB_PASS=${DB_PASS}
+    - DB_HOST=db      # Keep this as `db` so the Flask app connects to the container, not localhost
+    - DB_PORT=${DB_PORT}
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - app-net
+
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+volumes:
+  pgdata:
+
+networks:
+  app-net:
