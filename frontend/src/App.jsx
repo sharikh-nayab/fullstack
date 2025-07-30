@@ -5,6 +5,7 @@ import Add from '../pages/Add';
 import EditProduct from '../pages/EditProduct';
 import DeleteProduct from '../pages/DeleteProduct';
 import './index.css';
+import Login from '../pages/login';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Link to="/" className="hover:underline">Home</Link>
         <Link to="/products" className="hover:underline">Products</Link>
         <Link to="/add" className="hover:underline">Add Product</Link>
+        <Link to="/auth/login" className="px-4 py-2">Login</Link>
       </nav>
 
 
@@ -23,6 +25,7 @@ function App() {
         <Route path="/add" element={<Add />} />
         <Route path="/edit/:id" element={<EditProduct />} />
         <Route path="/delete/:id" element={<DeleteProduct />} />
+        <Route path="/auth/login" element={<Login />} />
       </Routes>
     </div>
   );

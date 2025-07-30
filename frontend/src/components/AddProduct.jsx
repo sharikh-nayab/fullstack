@@ -1,5 +1,6 @@
 // components/AddProduct.jsx
 import { useState } from 'react';
+import { apiFetch } from '../utils/api';
 
 function AddProduct() {
   const [name, setName] = useState('');
@@ -16,25 +17,20 @@ function AddProduct() {
       description,
     };
 
-    fetch('http://127.0.0.1:5000/api/products', {
+    apiFetch('/api/products', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newProduct),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to add product');
-        return res.json();
-      })
       .then((data) => {
-        setMessage(data.message || 'Product added!');
-        setName('');
-        setPrice('');
-        setDescription('');
-      })
+      setMessage(data.message || 'Product added!');
+      setName('');
+      setPrice('');
+      setDescription('');
+    })
       .catch((err) => {
-        console.error(err);
-        setMessage('Error adding product');
-      });
+      console.error(err);
+      setMessage('Error adding product');
+     });
   };
 
   return (

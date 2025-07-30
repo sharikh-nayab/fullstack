@@ -9,3 +9,17 @@ CREATE TABLE IF NOT EXISTS products (
 INSERT INTO products (name, price, description) VALUES
 ('Monitor', 199.99, '24-inch HD monitor'),
 ('Mouse', 19.99, 'Wireless mouse only');
+
+-- Users table to store login credentials and account metadata
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- Optional test user
+INSERT INTO users (username, email, password_hash)
+VALUES ('testuser', 'test@example.com', 'hashed_password_123')
+ON CONFLICT (email) DO NOTHING;
+

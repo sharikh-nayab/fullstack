@@ -5,10 +5,9 @@ function ProductList() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/products')
-      .then(res => res.json())
+    apiFetch('/api/products')
       .then(data => setProducts(data))
-      .catch(err => console.error("Error fetching products:", err));
+      .catch(err => console.error('Error fetching products:', err));
   }, []);
 
   return (
