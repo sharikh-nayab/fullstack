@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../src/context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // custom login from AuthContext
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,8 +25,8 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token); // Save token
-        navigate("/products"); // Redirect to products page
+        login(data.access_token); // ✅ Save token globally
+        navigate("/products");
       } else {
         setError(data.error || "Login failed");
       }

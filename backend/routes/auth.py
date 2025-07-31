@@ -1,9 +1,30 @@
 from flask import Blueprint, request, jsonify
 from db.pg_connection import get_connection
 from utils.security import hash_password, verify_password
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from flask_jwt_extended import create_access_token
 
+
 auth_bp = Blueprint('auth', __name__)
+
+@auth_bp.route('/users', methods=['GET'])
+@jwt_required()
+def list_users():
+    """
+    Returns all registered users (id, username, email).
+    Protected: only accessible with a valid JWT.
+    """
+    conn = get_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, username, email FROM users;")
+        rows = cur.fetchall()
+    conn.close()
+
+    users = [
+        {"id": u[0], "username": u[1], "email": u[2]}
+        for u in rows
+    ]
+    return jsonify(users), 200
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -52,6 +73,9 @@ def login():
     if not row or not verify_password(password, row[2]):
         return jsonify(error="Invalid credentials"), 401
 
-    identity = {"id": row[0], "username": row[1]}
-    token = create_access_token(identity=identity)
+    user_id = str(row[0])  # <- must be a string
+    token = create_access_token(
+        identity=user_id,
+        additional_claims={"username": row[1], "email": email}
+    )
     return jsonify(access_token=token), 200

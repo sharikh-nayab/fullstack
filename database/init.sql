@@ -23,3 +23,11 @@ INSERT INTO users (username, email, password_hash)
 VALUES ('testuser', 'test@example.com', 'hashed_password_123')
 ON CONFLICT (email) DO NOTHING;
 
+-- Wishlist table to track products saved by users
+CREATE TABLE IF NOT EXISTS wishlist (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, product_id) -- prevent duplicate entries
+);

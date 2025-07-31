@@ -7,17 +7,19 @@ from config import Config
 from db.pg_connection import get_connection
 from routes.auth import auth_bp
 import logging
+from routes.wishlist import wishlist_bp
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     # Initialize JWT
     jwt = JWTManager(app)
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(wishlist_bp)
 
     # Logging + error handler
     logging.basicConfig(level=logging.INFO)
@@ -110,10 +112,20 @@ def create_app():
             return jsonify(error="Not found"), 404
         return jsonify(message="Deleted"), 200
     
+    @app.route('/favicon.ico')
+    def favicon():
+    # Return ‘no content’ so the browser stops asking
+        return '', 204
+
     @app.errorhandler(Exception)
     def handle_uncaught_exception(e):
         logger.exception("Catch-all exception:")
         return jsonify(error="Something went wrong", details=str(e)), 500
+    
+    @app.errorhandler(404)
+    def not_found(e):
+        return jsonify(error="Not Found", message=str(e)), 404
+
 
     return app
 
