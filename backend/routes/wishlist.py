@@ -7,8 +7,9 @@ wishlist_bp = Blueprint("wishlist", __name__)
 @wishlist_bp.route("/wishlist", methods=["POST"])
 @jwt_required()
 def add_to_wishlist():
-    user_id = get_jwt_identity()
+    user_id = get_jwt_identity()  # This is a string, e.g. "2"
     print("👤 JWT Identity:", user_id)
+    
     data = request.get_json()
     product_id = data.get("product_id")
 
@@ -19,12 +20,11 @@ def add_to_wishlist():
         conn = get_connection()
         cur = conn.cursor()
 
-        # Insert into wishlist table (skip duplicates)
         cur.execute("""
             INSERT INTO wishlist (user_id, product_id)
             VALUES (%s, %s)
             ON CONFLICT DO NOTHING
-        """, (user_id["id"], product_id))
+        """, (user_id, product_id))  # ✅ No user_id["id"]
 
         conn.commit()
         cur.close()
@@ -45,19 +45,17 @@ def get_wishlist():
         conn = get_connection()
         cur = conn.cursor()
 
-        # Fetch all wishlist items for the user
         cur.execute("""
             SELECT p.id, p.name, p.description, p.price
             FROM wishlist w
             JOIN products p ON w.product_id = p.id
             WHERE w.user_id = %s
-        """, (user_id["id"],))
+        """, (user_id,))  # ✅ No user_id["id"]
 
         rows = cur.fetchall()
         cur.close()
         conn.close()
 
-        # Format response as list of products
         wishlist = [
             {
                 "id": row[0],
@@ -70,5 +68,35 @@ def get_wishlist():
 
         return jsonify({"wishlist": wishlist}), 200
 
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@wishlist_bp.route("/wishlist", methods=["DELETE"])
+@jwt_required()
+def remove_from_wishlist():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    product_id = data.get("product_id")
+
+    if not product_id:
+        return jsonify({"error": "Product ID is required"}), 400
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            DELETE FROM wishlist
+            WHERE user_id = %s AND product_id = %s
+        """, (user_id, product_id))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({"message": "Item removed from wishlist"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+

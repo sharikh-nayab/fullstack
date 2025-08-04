@@ -10,6 +10,10 @@ import Register from '../pages/register';
 import Users from '../pages/Userlist';
 import Wishlist from '../pages/Wishlist';
 import ProtectedRoute from '../pages/ProtectedRoute';
+import BuyProduct from '../pages/BuyProduct';
+import Invoices from '../pages/Invoices';
+
+
 
 
 function App() {
@@ -22,6 +26,8 @@ function App() {
         <Link to="/auth/login" className="px-4 py-2">Login</Link>
         <Link to="/auth/register" className="px-4 py-2">Register</Link>
         <Link to="/auth/users" className="px-4 py-2">Users</Link>
+        <Link to="/buy" className="px-4">My Orders</Link>
+        <Link to="/invoices" className="px-4">Invoices</Link>
       </nav>
 
 
@@ -35,10 +41,9 @@ function App() {
         <Route path="/auth/register" element={<Register />} />
         <Route path="/auth/users" element={<Users />} />
         <Route path="*" element={<h1>404: Page Not Found</h1>} />
-        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>
-    }
-  />
-
+        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>}/>
+        <Route path="/buy" element={<ProtectedRoute><BuyProduct /></ProtectedRoute>}/>
+        <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>}/>
       </Routes>
     </div>
   );

@@ -8,6 +8,8 @@ from db.pg_connection import get_connection
 from routes.auth import auth_bp
 import logging
 from routes.wishlist import wishlist_bp
+from routes.orders import orders_bp
+from routes.invoice import invoices_bp
 
 def create_app():
     app = Flask(__name__)
@@ -20,6 +22,9 @@ def create_app():
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(wishlist_bp)
+    app.register_blueprint(orders_bp)
+    app.register_blueprint(invoices_bp)
+
 
     # Logging + error handler
     logging.basicConfig(level=logging.INFO)

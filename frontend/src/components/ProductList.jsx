@@ -7,6 +7,8 @@ function ProductList() {
   const [products, setProducts] = useState([]);
   const { token, isAuthenticated } = useAuth();
   const [message, setMessage] = useState("");
+  const [buyMessage, setBuyMessage] = useState("");
+
 
   useEffect(() => {
     apiFetch('/api/products')
@@ -39,7 +41,32 @@ function ProductList() {
 
     setTimeout(() => setMessage(""), 2000);
   };
-
+  const handleBuyProduct = async (productId) => {
+    try {
+      const response = await fetch("http://localhost:5000/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ product_id: productId })
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setBuyMessage("✅ Purchase successful!");
+      } else {
+        setBuyMessage(data.error || "Purchase failed");
+      }
+    } catch (err) {
+      console.error(err);
+      setBuyMessage("Server error");
+    }
+  
+    setTimeout(() => setBuyMessage(""), 2000);
+  };  
+  
   return (
     <div>
       {message && (
@@ -47,6 +74,7 @@ function ProductList() {
           {message}
         </div>
       )}
+
 
       {products.map((product) => (
         <div
@@ -59,17 +87,28 @@ function ProductList() {
           <Link to={`/delete/${product.id}`}>Delete</Link>
 
           {isAuthenticated && (
-            <button
-              onClick={() => handleAddToWishlist(product.id)}
-              className="ml-4 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Add to Wishlist
-            </button>
+            <>
+              <button
+                onClick={() => handleAddToWishlist(product.id)}
+                className="ml-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Add to Wishlist
+              </button>
+
+              <button
+                onClick={() => handleBuyProduct(product.id)}
+                className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Buy Now
+              </button>
+            </>
           )}
         </div>
       ))}
     </div>
-  );
+  )
+  ;
+  
 }
 
 export default ProductList;
