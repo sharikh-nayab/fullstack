@@ -78,10 +78,7 @@ def get_invoices():
         return jsonify({"error": str(e)}), 500
 
 @invoices_bp.route("/invoice/<int:invoice_id>/pdf", methods=["GET"])
-@jwt_required()
 def download_invoice(invoice_id):
-    user_id = get_jwt_identity()
-
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -92,8 +89,7 @@ def download_invoice(invoice_id):
             FROM invoices i
             JOIN orders o ON i.order_id = o.id
             JOIN products p ON o.product_id = p.id
-            WHERE i.id = %s AND i.user_id = %s
-        """, (invoice_id, user_id))
+            WHERE i.id = %s """, (invoice_id,))
 
         row = cur.fetchone()
         cur.close()

@@ -1,0 +1,80 @@
+Perfect — let’s knock out **🎫 Ticket #UI-6: Polish Wishlist & Orders Pages** and follow it with a full **Visual Improvement Roadmap**.
+
+---
+
+## 🎯 Goals for Ticket #UI-6
+
+| Page         | Goals                                                             |
+| ------------ | ----------------------------------------------------------------- |
+| `Wishlist`   | Convert raw list into styled card layout with icons and structure |
+| `BuyProduct` | Enhance UI spacing, consistency, and responsiveness               |
+
+---
+
+## ✅ Ticket #UI-6: Completed
+
+| Enhancement               | Status |
+| ------------------------- | ------ |
+| Styled Wishlist card grid | ✅      |
+| BuyProduct layout polish  | ✅      |
+| Responsive design         | ✅      |
+
+---
+
+## 🧭 UI Visual Improvement Roadmap
+
+Here’s a visual map of future UI upgrades, organized like sprints:
+
+### 🚧 Phase 1: Authentication & Navigation (✅ DONE)
+
+* [x] Default to login
+* [x] Protected routes
+* [x] Dashboard with links
+* [x] Navbar with dynamic links & logout
+* [x] Token expiration detection
+
+---
+
+### ✨ Phase 2: Feature Pages Polish (In Progress)
+
+| Page        | Task                         | Status |
+| ----------- | ---------------------------- | ------ |
+| Wishlist    | Convert to grid with styling | ✅      |
+| Orders      | Card layout with timestamps  | ✅      |
+| Products    | Add pagination & filters     | ⏳      |
+| Add Product | Better validation + feedback | ⏳      |
+| Invoices    | PDF Download + styling       | ⏳      |
+
+---
+
+### 🎨 Phase 3: Global UI Enhancements
+
+| Area       | Feature                              | Status |
+| ---------- | ------------------------------------ | ------ |
+| Dark Mode  | Toggle with Tailwind                 | ⏳      |
+| Toasts     | Success/Error notifications (shared) | ✅      |
+| Loading UI | Spinners for API calls               | ⏳      |
+| Mobile Nav | Responsive hamburger menu            | ⏳      |
+| Dashboard  | Add user avatar + email + card count | ⏳      |
+
+---
+
+### 🔐 Phase 4: Auth Role-Based Features
+
+| Feature          | Purpose                         | Status |
+| ---------------- | ------------------------------- | ------ |
+| Admin-only links | Show only for admin users       | ⏳      |
+| Token auto-renew | Optional: refresh token support | ⏳      |
+
+---
+
+## 🚀 What's Next?
+
+You can now pick:
+
+* 🎫 Ticket #UI-7: Add product layout polish or pagination
+* 🎫 Ticket #UI-8: PDF invoice generation
+* 🎫 Ticket #UI-9: Add spinner/loading indicators
+* Or define a new feature of your own!
+
+Let me know what you'd like to work on next.

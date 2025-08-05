@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../src/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Wishlist() {
   const { token } = useAuth();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchWishlist();
+  }, [token]);
 
   const fetchWishlist = async () => {
     try {
@@ -43,8 +49,7 @@ function Wishlist() {
 
       if (response.ok) {
         setMessage("Removed from wishlist");
-        // Remove item from local state instantly
-        setWishlistItems(wishlistItems.filter(item => item.id !== productId));
+        setWishlistItems(prev => prev.filter(item => item.id !== productId));
       } else {
         setError(data.error || "Failed to remove item");
       }
@@ -59,9 +64,40 @@ function Wishlist() {
     }, 2000);
   };
 
-  useEffect(() => {
-    fetchWishlist();
-  }, [token]);
+  const handleBuyNow = async (productId) => {
+    try {
+      const response = await fetch("http://localhost:5000/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ product_id: productId })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("Product purchased and invoice generated!");
+        setWishlistItems(prev => prev.filter(item => item.id !== productId));
+        
+        // ✅ Redirect to orders after short delay
+        setTimeout(() => {
+          navigate("/orders");
+        }, 1000);
+      } else {
+        setError(data.error || "Failed to buy product");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Error processing purchase");
+    }
+
+    setTimeout(() => {
+      setError("");
+      setMessage("");
+    }, 3000);
+  };
 
   return (
     <div className="p-6">
@@ -73,20 +109,28 @@ function Wishlist() {
       {wishlistItems.length === 0 ? (
         <p className="text-gray-600">Your wishlist is empty.</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-4">
           {wishlistItems.map((item) => (
             <li key={item.id} className="p-4 border rounded shadow">
               <h2 className="text-lg font-semibold">{item.name}</h2>
               <p className="text-gray-600">{item.description}</p>
               <p className="text-green-600 font-bold">₹{item.price}</p>
 
-              <button
-                onClick={() => handleRemove(item.id)}
-                className="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 block"
-              >
-                 ❌ Remove
-              </button>
+              <div className="flex gap-4 mt-3">
+                <button
+                  onClick={() => handleRemove(item.id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  ❌ Remove
+                </button>
 
+                <button
+                  onClick={() => handleBuyNow(item.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  🛒 Buy Now
+                </button>
+              </div>
             </li>
           ))}
         </ul>

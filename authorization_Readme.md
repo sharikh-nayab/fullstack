@@ -106,3 +106,78 @@ Would you like me to:
 * Generate a printable PDF version of the diagram?
 
 Let’s build it the way **you** learn best.
+
+Great question — testing authenticated APIs in Postman requires passing the **JWT token** in the `Authorization` header. Here’s exactly how to do that:
+
+---
+
+## ✅ How to Get and Use JWT Token in Postman
+
+---
+
+### 🔐 Step 1: Call `/login` to get your JWT
+
+**Request:**
+
+* **Method:** `POST`
+* **URL:** `http://localhost:5000/login`
+* **Headers:**
+  `Content-Type: application/json`
+* **Body (raw, JSON):**
+
+```json
+{
+  "email": "test@example.com",
+  "password": "yourpassword"
+}
+```
+
+> 🟡 Use real email/password that exists in your `users` table.
+
+---
+
+### ✅ Step 2: Copy the token from the response
+
+You'll get a response like:
+
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJh..."
+}
+```
+
+---
+
+### 🔁 Step 3: Use this token in other requests
+
+For every API that requires auth (like `/wishlist`, `/orders`, `/invoice`, etc.):
+
+* Add a header:
+
+```
+Key:    Authorization
+Value:  Bearer <paste-your-token-here>
+```
+
+Example:
+
+```
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJh...
+```
+
+---
+
+### 🧠 Bonus: Use Postman Environment Variable (Optional)
+
+1. In Postman, create an environment:
+
+   * Variable name: `authToken`
+   * Initial value: *(paste the token)*
+
+2. In headers of all protected requests:
+
+```
+Key:    Authorization
+Value:  Bearer {{authToken}}
+```
+

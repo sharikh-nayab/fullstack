@@ -357,3 +357,85 @@ useEffect(() => {
 
 ---
 
+Here is a clean, copyable plain text version of your error list:
+
+---
+
+### ✅ **Full Error Log with Explanations and Fixes**
+
+---
+
+#### 1. **Error:** `Cannot access 'd' before initialization`
+
+**Cause:** JavaScript block-scoped variable `let` was used incorrectly, attempting to use the variable before it's initialized.
+**Solution:** Reorganized the code to ensure the variable is declared and assigned before being used.
+
+---
+
+#### 2. **Blank Page after Login**
+
+**Cause:** `BrowserRouter` was not wrapping the entire React tree correctly, or there were issues with route rendering.
+**Solution:** Ensured `BrowserRouter` wrapped `<App />` and all routes were defined inside `App.jsx`.
+
+---
+
+#### 3. **Error:**
+
+`Cannot destructure property 'basename' of 'R.useContext(...)' as it is null.`
+**Cause:** React Router context was not initialized correctly—likely due to a missing or misconfigured `BrowserRouter`.
+**Solution:** Made sure `<BrowserRouter>` was correctly placed in `main.jsx` wrapping the app.
+
+---
+
+#### 4. **500 INTERNAL SERVER ERROR** on `/wishlist` POST
+
+**Cause:** The backend failed due to incorrect use of `user_id["id"]` when `user_id` was actually just a string, not a dict.
+**Solution:** Replaced `user_id["id"]` with simply `user_id`.
+
+---
+
+#### 5. **Delete Button on Wishlist Not Visible**
+
+**Cause:** Delete button was correctly coded but didn't render possibly due to missing list data or no items being returned from backend.
+**Solution:** Fixed backend to return correct wishlist and ensured JSX was rendering `<button>` properly.
+
+---
+
+#### 6. **Buy Now Button Not Functioning**
+
+**Cause:** The button was implemented but there was no feedback or incorrect API endpoint was called.
+**Solution:** Verified `/orders` POST API was hit, and success message was added via `setBuyMessage()`.
+
+---
+
+#### 7. **Error 304 Not Modified for /order**
+
+**Cause:** Not an actual error. A `304` status indicates the resource hasn’t changed and can be served from the browser cache.
+**Solution:** Ignored it—it doesn't impact functionality.
+
+---
+
+#### 8. **PDF Download → 401 UNAUTHORIZED**
+
+**Cause:** JWT was required on the `/invoice/<id>/pdf` route, but downloads via `<a href>` can't send Authorization headers.
+**Solution:** Removed `@jwt_required()` from the PDF route to allow public access to invoice downloads.
+
+---
+
+#### 9. **PDF Download → 500 INTERNAL SERVER ERROR**
+
+**Cause:** Tuple was not passed properly in SQL query.
+Wrong: `(invoice_id)`
+Correct: `(invoice_id,)`
+**Solution:** Added a comma to make it a single-element tuple.
+
+---
+
+#### 10. **Invoices Not Displaying in Frontend**
+
+**Cause:** Invoice route returned no data due to missing `user_id` filtering or frontend fetch issues.
+**Solution:** Ensured `user_id` is retrieved from JWT properly in `/invoices` route and frontend state is set with correct data.
+
+---
+
+Let me know if you'd like to convert this into a downloadable file or integrate it into your project documentation (`README.md`, `docs/errors.md`, etc.).

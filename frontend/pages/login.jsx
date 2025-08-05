@@ -26,7 +26,7 @@ function Login() {
 
       if (response.ok) {
         login(data.access_token); // ✅ Save token globally
-        navigate("/products");
+        navigate("/dashboard");
       } else {
         setError(data.error || "Login failed");
       }

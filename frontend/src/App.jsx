@@ -1,4 +1,5 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { Toaster } from "react-hot-toast";
 import Home from '../pages/Home';
 import Products from '../pages/Products';
 import Add from '../pages/Add';
@@ -11,39 +12,104 @@ import Users from '../pages/Userlist';
 import Wishlist from '../pages/Wishlist';
 import ProtectedRoute from '../pages/ProtectedRoute';
 import BuyProduct from '../pages/BuyProduct';
-import Invoices from '../pages/Invoices';
-
-
+import Invoices from '../pages/invoices';
+import Dashboard from '../pages/Dashboard';
+import Navbar from '../src/components/Navbar';
 
 
 function App() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <nav className="bg-blue-600 text-white p-4 rounded flex gap-4 mb-6">
-        <Link to="/" className="hover:underline">Home</Link>
-        <Link to="/products" className="hover:underline">Products</Link>
-        <Link to="/add" className="hover:underline">Add Product</Link>
-        <Link to="/auth/login" className="px-4 py-2">Login</Link>
-        <Link to="/auth/register" className="px-4 py-2">Register</Link>
-        <Link to="/auth/users" className="px-4 py-2">Users</Link>
-        <Link to="/buy" className="px-4">My Orders</Link>
-        <Link to="/invoices" className="px-4">Invoices</Link>
-      </nav>
-
-
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Toaster position="top-right" reverseOrder={false} />
+      <Navbar /> {/* ✅ Placed outside <Routes> */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/add" element={<Add />} />
-        <Route path="/edit/:id" element={<EditProduct />} />
-        <Route path="/delete/:id" element={<DeleteProduct />} />
+        {/* ⛔ Default Route: redirect to login */}
+        <Route path="/" element={<Navigate to="/auth/login" />} />
+
+        {/* ✅ Testing/Health Check Route */}
+        <Route path="/health" element={<Home />} />
+
+        {/* 🔐 Auth Routes */}
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/register" element={<Register />} />
-        <Route path="/auth/users" element={<Users />} />
+
+        {/* 🔐 Protected Routes */}
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <Products />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add"
+          element={
+            <ProtectedRoute>
+              <Add />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/delete/:id"
+          element={
+            <ProtectedRoute>
+              <DeleteProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/auth/users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <BuyProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/invoices"
+          element={
+            <ProtectedRoute>
+              <Invoices />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* 🛑 Fallback Route */}
         <Route path="*" element={<h1>404: Page Not Found</h1>} />
-        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>}/>
-        <Route path="/buy" element={<ProtectedRoute><BuyProduct /></ProtectedRoute>}/>
-        <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>}/>
       </Routes>
     </div>
   );

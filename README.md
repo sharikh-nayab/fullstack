@@ -220,9 +220,5 @@ ADMIN_PASS=adminpassword
 **Sharikh Nayab** [@sharikh-nayab](https://github.com/sharikh-nayab)
 Pull requests, issues, and feedback are welcome!
 
-```
 
----
-
-Let me know if you want this saved as a file (`README.md`) or want to include deployment/CI instructions too.
 ```

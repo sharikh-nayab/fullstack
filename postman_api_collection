@@ -1,0 +1,220 @@
+Here is the complete Postman collection for your fullstack product manager API:
+
+📦 [Download ProductManagerAPI.postman\_collection.json](sandbox:/mnt/data/ProductManagerAPI.postman_collection.json)
+
+You can import this file into Postman to test the following API routes:
+
+* `GET /` – Health check
+* `GET /api/products` – Fetch all products
+* `POST /api/products` – Add a new product
+* `GET /api/products/:id` – Fetch product by ID
+* `PUT /api/products/:id` – Update product by ID
+* `DELETE /api/products/:id` – Delete product by ID
+
+{
+  "info": {
+    "name": "Fullstack Product App APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/register"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"user\", \"email\": \"email\", \"password\": \"pass\"}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/login"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"email\", \"password\": \"pass\"}"
+        }
+      }
+    },
+    {
+      "name": "Get Products",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5000/api/products"
+        }
+      }
+    },
+    {
+      "name": "Add to Wishlist",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/wishlist"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"product_id\": 1}"
+        }
+      }
+    },
+    {
+      "name": "Get Wishlist",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/wishlist"
+        }
+      }
+    },
+    {
+      "name": "Remove from Wishlist",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/wishlist"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"product_id\": 1}"
+        }
+      }
+    },
+    {
+      "name": "Place Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"product_id\": 1}"
+        }
+      }
+    },
+    {
+      "name": "Get Orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders"
+        }
+      }
+    },
+    {
+      "name": "Create Invoice (manual)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/invoice"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"order_id\": 1, \"total\": 199.99}"
+        }
+      }
+    },
+    {
+      "name": "Get Invoices",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/invoices"
+        }
+      }
+    },
+    {
+      "name": "Download Invoice PDF",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <token>"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/invoice/1/pdf"
+        }
+      }
+    }
+  ]
+}

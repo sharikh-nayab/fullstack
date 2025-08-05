@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
@@ -8,7 +8,7 @@ function ProductList() {
   const { token, isAuthenticated } = useAuth();
   const [message, setMessage] = useState("");
   const [buyMessage, setBuyMessage] = useState("");
-
+  const navigate = useNavigate(); // ✅ Initialize it here
 
   useEffect(() => {
     apiFetch('/api/products')
@@ -41,6 +41,7 @@ function ProductList() {
 
     setTimeout(() => setMessage(""), 2000);
   };
+
   const handleBuyProduct = async (productId) => {
     try {
       const response = await fetch("http://localhost:5000/orders", {
@@ -51,11 +52,14 @@ function ProductList() {
         },
         body: JSON.stringify({ product_id: productId })
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setBuyMessage("✅ Purchase successful!");
+
+        // ✅ Redirect to orders
+        navigate("/orders");
       } else {
         setBuyMessage(data.error || "Purchase failed");
       }
@@ -63,10 +67,10 @@ function ProductList() {
       console.error(err);
       setBuyMessage("Server error");
     }
-  
+
     setTimeout(() => setBuyMessage(""), 2000);
-  };  
-  
+  };
+
   return (
     <div>
       {message && (
@@ -75,13 +79,12 @@ function ProductList() {
         </div>
       )}
 
-
       {products.map((product) => (
         <div
           key={product.id}
           style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}
         >
-          <h3>{product.name} – ${product.price}</h3>
+          <h3>{product.name} – ₹{product.price}</h3>
           <p>{product.description}</p>
           <Link to={`/edit/${product.id}`} style={{ marginRight: '1rem' }}>Edit</Link>
           <Link to={`/delete/${product.id}`}>Delete</Link>
@@ -106,9 +109,7 @@ function ProductList() {
         </div>
       ))}
     </div>
-  )
-  ;
-  
+  );
 }
 
 export default ProductList;
