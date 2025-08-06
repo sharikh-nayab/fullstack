@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function Dashboard() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-900 text-blue">
       <div className="text-center py-10">
         <h1 className="text-4xl font-bold mb-2">Welcome to the Dashboard</h1>
         <p className="text-lg text-gray-400">

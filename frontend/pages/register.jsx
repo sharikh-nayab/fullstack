@@ -94,7 +94,7 @@ export default function Register() {
 
       {/* 👇 Manual login button as fallback */}
       <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600">Already have an account?</p>
+        <p className="text-sm text-blue-600">Already have an account?</p>
         <button
           onClick={() => navigate('/auth/login')}
           className="mt-1 text-blue-600 hover:underline"

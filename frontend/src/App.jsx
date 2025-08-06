@@ -14,14 +14,14 @@ import ProtectedRoute from '../pages/ProtectedRoute';
 import BuyProduct from '../pages/BuyProduct';
 import Invoices from '../pages/invoices';
 import Dashboard from '../pages/Dashboard';
-import Navbar from '../src/components/Navbar';
+import AppNavbar from '../src/components/Navbar';
 
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Toaster position="top-right" reverseOrder={false} />
-      <Navbar /> {/* ✅ Placed outside <Routes> */}
+      <AppNavbar /> {/* ✅ Placed outside <Routes> */}
       <Routes>
         {/* ⛔ Default Route: redirect to login */}
         <Route path="/" element={<Navigate to="/auth/login" />} />

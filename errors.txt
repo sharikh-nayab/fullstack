@@ -438,4 +438,219 @@ Correct: `(invoice_id,)`
 
 ---
 
-Let me know if you'd like to convert this into a downloadable file or integrate it into your project documentation (`README.md`, `docs/errors.md`, etc.).
+
+# 📋 Error & Resolution Log for Wishlist + Product Buy Flow
+
+---
+
+### **1. Navbar Links Too Close / Clumsy UI**
+
+* **Description**: Navbar buttons were clumped together with no visible spacing.
+* **Root Cause**: Incorrect usage of Tailwind spacing (`space-x-6`) with broken layout structure.
+* **Solution**: Replaced `space-x` with `mx-4` or `gap-[40px]` inside `grid` layout and ensured `Navbar` was properly imported and rendered in `App.jsx`.
+
+---
+
+### **2. “Buy Now” Button Missing in Wishlist**
+
+* **Description**: The wishlist page only had “Remove” button; no way to purchase items.
+* **Root Cause**: Component logic did not include any `Buy Now` handler or button.
+* **Solution**: Added `🛒 Buy Now` button beside each wishlist item and implemented the `handleBuyNow` function that calls `/orders` API.
+
+---
+
+### **3. Invoice Not Generated When Buying From Wishlist**
+
+* **Description**: Purchasing a product from the wishlist didn’t create an invoice.
+* **Root Cause**: Frontend was calling `/buy`, which doesn't exist. Invoice generation only happens in `/orders` API.
+* **Solution**: Changed the wishlist’s `handleBuyNow()` to use `/orders` route instead of `/buy`.
+
+---
+
+### **4. `status` Column Does Not Exist Error (PostgreSQL)**
+
+* **Description**: Server threw error `column "status" of relation "orders" does not exist`.
+* **Root Cause**: Backend was trying to insert into a nonexistent `status` column in `orders` table.
+* **Solution**: Removed `status` column from the SQL insert statement or alternatively added `status` column to the schema with `ALTER TABLE`.
+
+---
+
+### **5. Invoice Not Generated Automatically**
+
+* **Description**: You had to manually call `/invoice` to generate invoice.
+* **Root Cause**: You were calling `/buy`, but your `/orders` route already auto-generates the invoice.
+* **Solution**: Ensured all buy actions route through `/orders` so invoice generation happens automatically.
+
+---
+
+### **6. Remove from Wishlist Redirected to `/invoices` (Incorrect)**
+
+* **Description**: Clicking “Remove” from wishlist redirected to `/invoices`.
+* **Root Cause**: Misplaced `navigate("/invoices")` inside `handleRemove`.
+* **Solution**: Removed `navigate("/invoices")` from `handleRemove()` to prevent unwanted navigation.
+
+---
+
+### **7. “Page Not Found” After Buying from Wishlist**
+
+* **Description**: After buying from wishlist, app redirected to `/orders`, but showed 404.
+* **Root Cause**: Route `/orders` was not defined in `App.jsx`.
+* **Solution**: Added route in `App.jsx`:
+
+  ```jsx
+  <Route path="/orders" element={<BuyProduct />} />
+  ```
+
+---
+
+### **8. “Buy Now” from Product Page Doesn’t Redirect**
+
+* **Description**: Buying from ProductList did not go to `/orders`.
+* **Root Cause**: You forgot to import and use `useNavigate()` in `ProductList.jsx`.
+* **Solution**: Imported `useNavigate` from `react-router-dom`, called it with `const navigate = useNavigate()`, and used `navigate("/orders")` after successful buy.
+
+---
+
+## ✅ Bonus: Good Practices We Applied
+
+| Practice                         | Description                                       |
+| -------------------------------- | ------------------------------------------------- |
+| Centralized API call (`/orders`) | Ensures consistent logic and invoice generation   |
+| Used `setTimeout` for smooth UI  | Delayed redirect/messages after buy for better UX |
+| Reused wishlist data cleanly     | Used `setWishlistItems(prev => filter(...))`      |
+| Split error/message logic        | Clear display and cleanup of user feedback        |
+
+---
+
+
+
+
+---
+
+## ⚠️ 1. **Navbar links were visible before login**
+
+* **Description**: Even without logging in, all internal route links (`Products`, `Orders`, etc.) were visible on the navbar.
+* **Root Cause**: `Navbar.jsx` did not check `isAuthenticated` before rendering navigation links.
+* **Solution**:
+
+  * Wrapped links inside: `if (isAuthenticated)` block.
+  * Used `useAuth()` context to verify login state before rendering.
+
+---
+
+## ⚠️ 2. **Login/Register buttons used wrong paths**
+
+* **Description**: Clicking on `Login` or `Register` navigated to `/login` and `/register` — leading to 404 or blank pages.
+* **Root Cause**: Routes were defined as `/auth/login` and `/auth/register` in `App.jsx`, but `Navbar.jsx` had outdated paths.
+* **Solution**:
+
+  * Updated all links to use:
+
+    ```jsx
+    to="/auth/login"
+    to="/auth/register"
+    ```
+
+---
+
+## ⚠️ 3. **All nav links were cramped/clumped together**
+
+* **Description**: Navbar links like `DashboardProductsAddOrders...` were stuck together with zero spacing.
+* **Root Cause**: Missing Tailwind spacing utilities like `gap-6`, `px`, or `space-x-*` inside the `flex` containers.
+* **Solution**:
+
+  * Used: `flex gap-6` for nav links and `gap-4` for button spacing
+  * Improved layout using:
+
+    ```jsx
+    className="flex items-center justify-between"
+    ```
+
+---
+
+## ⚠️ 4. **Navbar visible on `/dashboard`**
+
+* **Description**: The dashboard was supposed to be a clean layout without the navbar, but it showed up anyway.
+* **Root Cause**: `Navbar.jsx` was mounted globally in `App.jsx`, and didn't conditionally hide itself.
+* **Solution**:
+
+  * Added:
+
+    ```js
+    if (location.pathname === "/dashboard") return null;
+    ```
+
+---
+
+## ⚠️ 5. **Login/Register buttons were too close**
+
+* **Description**: On `/auth/login`, the "Login" and "Register" buttons appeared stuck together like `LoginRegister`.
+* **Root Cause**: No spacing between buttons (`gap-4`) and no `px` padding inside button classes.
+* **Solution**:
+
+  * Wrapped buttons in:
+
+    ```jsx
+    <div className="flex gap-4">
+    ```
+  * Added:
+
+    ```jsx
+    className="px-4 py-1 rounded"
+    ```
+
+---
+
+## ⚠️ 6. **Token was not being validated for expiration**
+
+* **Description**: After the JWT token expired, the user could still browse protected pages until refresh.
+* **Root Cause**: Token expiration wasn't being checked in `AuthContext`.
+* **Solution**:
+
+  * Used `jwtDecode(token).exp`
+  * Compared it to `Date.now() / 1000`
+  * Added an interval inside `useEffect` to re-check every 60 seconds
+  * Called `logout()` with a toast on token expiry
+
+---
+
+## ⚠️ 7. **After login, there was no way to go back to `/dashboard`**
+
+* **Description**: Once user navigated to `/products` or `/orders`, there was no navbar link to return to the dashboard.
+* **Root Cause**: `Dashboard` link was missing from the navbar.
+* **Solution**:
+
+  * Added:
+
+    ```jsx
+    <Link to="/dashboard">Dashboard</Link>
+    ```
+
+---
+
+## ⚠️ 8. **UI inconsistency: wishlist and orders pages looked raw**
+
+* **Description**: `Wishlist.jsx` and `BuyProduct.jsx` looked unstyled and not aligned with rest of the app.
+* **Root Cause**: No Tailwind layout or card components were used.
+* **Solution**:
+
+  * Refactored both pages:
+
+    * Wrapped content with `div className="p-6"`
+    * Used `grid`, `rounded-lg`, `shadow-md`, `text-gray-*` classes
+    * Converted lists to styled cards
+
+---
+
+## ⚠️ 9. **Toasts not showing login/logout status**
+
+* **Description**: Users couldn’t see if login/logout was successful.
+* **Root Cause**: `AuthContext` handled login/logout, but no feedback was shown.
+* **Solution**:
+
+  * Installed and configured `react-hot-toast`
+  * Added `toast.success(...)` on login/logout inside `AuthContext`
+
+---
+
+

@@ -100,7 +100,7 @@ def remove_from_wishlist():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@wishlist_bp.route("/buy", methods=["POST"])
+@wishlist_bp.route("/orders", methods=["POST"])
 @jwt_required()
 def buy_product():
     user_id = get_jwt_identity()
