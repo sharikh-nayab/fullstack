@@ -19,11 +19,9 @@ function AppNavbar() {
   if (isDashboard) return null;
 
   return (
-    <Navbar bg="dark" expand="lg" className="shadow-sm mb-4">
+    <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4">
       <Container>
-        <Navbar.Brand as={Link} to="/">
-          🛒 MyShop
-        </Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">🛒 MyShop</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           {isAuthenticated && (
@@ -38,10 +36,10 @@ function AppNavbar() {
             </Nav>
           )}
 
-          <Nav className="ms-auto d-flex align-items-center gap-3">
+          <Nav className="ms-auto">
             {!isAuthenticated && isAuthPage && (
               <>
-                <Button variant="primary" as={Link} to="/auth/login">
+                <Button variant="primary" as={Link} to="/auth/login" className="me-2">
                   Login
                 </Button>
                 <Button variant="success" as={Link} to="/auth/register">
@@ -50,7 +48,7 @@ function AppNavbar() {
               </>
             )}
             {isAuthenticated && (
-              <Button variant="dark" onClick={handleLogout}>
+              <Button variant="outline-light" onClick={handleLogout}>
                 Logout
               </Button>
             )}
