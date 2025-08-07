@@ -1,54 +1,39 @@
 import { Link } from "react-router-dom";
+import { Container, Row, Col, Card } from "react-bootstrap";
 
 function Dashboard() {
+  const items = [
+    { to: "/products", label: "View Products" },
+    { to: "/add", label: "Add Product" },
+    { to: "/wishlist", label: "My Wishlist" },
+    { to: "/orders", label: "My Orders" },
+    { to: "/invoices", label: "Invoices" },
+    { to: "/auth/users", label: "Users" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-900 text-blue">
-      <div className="text-center py-10">
-        <h1 className="text-4xl font-bold mb-2">Welcome to the Dashboard</h1>
-        <p className="text-lg text-gray-400">
-          Manage everything in one place.
-        </p>
+    <Container className="my-5">
+      <div className="text-center mb-5">
+        <h1 className="fw-bold">Welcome to the Dashboard</h1>
+        <p className="text-muted">Manage everything in one place.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-10 pb-10">
-        <Link
-          to="/products"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          View Products
-        </Link>
-        <Link
-          to="/add"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          Add Product
-        </Link>
-        <Link
-          to="/wishlist"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          My Wishlist
-        </Link>
-        <Link
-          to="/buy"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          My Orders
-        </Link>
-        <Link
-          to="/invoices"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          Invoices
-        </Link>
-        <Link
-          to="/auth/users"
-          className="bg-gray-800 hover:bg-gray-700 p-6 rounded-lg text-center shadow-md transition"
-        >
-          Users
-        </Link>
-      </div>
-    </div>
+      <Row className="g-4">
+        {items.map((item, idx) => (
+          <Col md={4} key={idx}>
+            <Card
+              as={Link}
+              to={item.to}
+              className="text-center text-decoration-none shadow-sm h-100"
+            >
+              <Card.Body className="p-4 bg-dark text-white rounded">
+                <Card.Title>{item.label}</Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 

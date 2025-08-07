@@ -1,89 +1,115 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../src/context/AuthContext";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Alert,
+  Spinner
+} from "react-bootstrap";
 
-function Invoices() {
+export default function Invoices() {
   const { token } = useAuth();
   const [invoices, setInvoices] = useState([]);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchInvoices = async () => {
+    async function fetchInvoices() {
       try {
         const res = await fetch("http://localhost:5000/invoices", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
-        if (res.ok) setInvoices(data.invoices);
-        else setError(data.error || "Failed to load invoices.");
+        if (res.ok) {
+          setInvoices(data.invoices);
+        } else {
+          throw new Error(data.error || "Failed to load invoices.");
+        }
       } catch (err) {
         console.error(err);
-        setError("Error fetching invoices.");
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
     fetchInvoices();
   }, [token]);
 
   const handleDownload = async (invoiceId) => {
+    setError("");
+    setDownloadingId(invoiceId);
     try {
-      setDownloadingId(invoiceId);
-      const res = await fetch(`http://localhost:5000/invoice/${invoiceId}/pdf`); // ❌ No token here
-
+      const res = await fetch(
+        `http://localhost:5000/invoices/${invoiceId}/pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
       if (!res.ok) {
-        let msg = "Failed to download invoice";
-        try {
-          const body = await res.json();
-          msg = body.error || body.message || msg;
-        } catch {}
-        throw new Error(msg);
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Download failed");
       }
-
       const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `invoice_${invoiceId}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error(e);
-      setError(e.message || "Download error");
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
     } finally {
       setDownloadingId(null);
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">My Invoices</h1>
-      {error && <p className="text-red-600 mb-4">{error}</p>}
-
-      {invoices.length === 0 ? (
-        <p className="text-gray-500">No invoices generated yet.</p>
-      ) : (
-        <ul className="space-y-4">
-          {invoices.map((inv) => (
-            <li key={inv.invoice_id} className="p-4 border rounded shadow bg-white">
-              <h2 className="text-lg font-semibold">{inv.product_name}</h2>
-              <p className="text-gray-600">Total: ₹{inv.price}</p>
-              <p className="text-sm text-gray-500">
-                Issued on: {new Date(inv.generated_at).toLocaleString()}
-              </p>
-              <button
-                onClick={() => handleDownload(inv.invoice_id)}
-                className="inline-block mt-2 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
-                disabled={downloadingId === inv.invoice_id}
-              >
-                {downloadingId === inv.invoice_id ? "Downloading..." : "Download PDF"}
-              </button>
-            </li>
-          ))}
-        </ul>
+    <Container className="my-5">
+      <h2 className="mb-4 text-center">My Invoices</h2>
+      {loading && (
+        <div className="text-center">
+          <Spinner animation="border" />
+        </div>
       )}
-    </div>
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {!loading && invoices.length === 0 && (
+        <Alert variant="info">No invoices generated yet.</Alert>
+      )}
+
+      <Row className="g-4">
+        {invoices.map((inv) => (
+          <Col key={inv.invoice_id} md={6} lg={4}>
+            <Card className="shadow-sm h-100">
+              <Card.Body>
+                <Card.Title>{inv.product_name}</Card.Title>
+                <Card.Text>Total: ₹{inv.price}</Card.Text>
+                <Card.Text className="text-muted">
+                  Issued on:{" "}
+                  {new Date(inv.generated_at).toLocaleString()}
+                </Card.Text>
+                <Button
+                  variant="primary"
+                  onClick={() => handleDownload(inv.invoice_id)}
+                  disabled={downloadingId === inv.invoice_id}
+                  className="mt-2"
+                >
+                  {downloadingId === inv.invoice_id
+                    ? "Downloading..."
+                    : "Download PDF"}
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
-
-export default Invoices;

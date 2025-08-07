@@ -1,14 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom'; // ✅ Added useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Alert
+} from 'react-bootstrap';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const { token, isAuthenticated } = useAuth();
   const [message, setMessage] = useState("");
   const [buyMessage, setBuyMessage] = useState("");
-  const navigate = useNavigate(); // ✅ Initialize it here
+  const navigate = useNavigate();
 
   useEffect(() => {
     apiFetch('/api/products')
@@ -28,9 +36,8 @@ function ProductList() {
       });
 
       const data = await response.json();
-
       if (response.ok) {
-        setMessage("Added to wishlist!");
+        setMessage("✅ Added to wishlist!");
       } else {
         setMessage(data.error || "Failed to add to wishlist.");
       }
@@ -57,8 +64,6 @@ function ProductList() {
 
       if (response.ok) {
         setBuyMessage("✅ Purchase successful!");
-
-        // ✅ Redirect to orders
         navigate("/orders");
       } else {
         setBuyMessage(data.error || "Purchase failed");
@@ -72,43 +77,55 @@ function ProductList() {
   };
 
   return (
-    <div>
-      {message && (
-        <div className="bg-green-100 text-green-800 p-2 mb-4 rounded">
-          {message}
-        </div>
-      )}
+    <Container className="my-4">
+      {message && <Alert variant="success">{message}</Alert>}
+      {buyMessage && <Alert variant="info">{buyMessage}</Alert>}
 
-      {products.map((product) => (
-        <div
-          key={product.id}
-          style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}
-        >
-          <h3>{product.name} – ₹{product.price}</h3>
-          <p>{product.description}</p>
-          <Link to={`/edit/${product.id}`} style={{ marginRight: '1rem' }}>Edit</Link>
-          <Link to={`/delete/${product.id}`}>Delete</Link>
+      <Row xs={1} md={2} lg={3} className="g-4">
+        {products.map(product => (
+          <Col key={product.id}>
+            <Card className="h-100 shadow-sm">
+              <Card.Body>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">
+                  ₹{product.price}
+                </Card.Subtitle>
+                <Card.Text>{product.description}</Card.Text>
 
-          {isAuthenticated && (
-            <>
-              <button
-                onClick={() => handleAddToWishlist(product.id)}
-                className="ml-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add to Wishlist
-              </button>
+                <div className="d-flex justify-content-between">
+                  <Link to={`/edit/${product.id}`} className="btn btn-outline-primary btn-sm">
+                    Edit
+                  </Link>
+                  <Link to={`/delete/${product.id}`} className="btn btn-outline-danger btn-sm">
+                    Delete
+                  </Link>
+                </div>
 
-              <button
-                onClick={() => handleBuyProduct(product.id)}
-                className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Buy Now
-              </button>
-            </>
-          )}
-        </div>
-      ))}
-    </div>
+                {isAuthenticated && (
+                  <div className="mt-3 d-flex gap-2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleAddToWishlist(product.id)}
+                    >
+                      Add to Wishlist
+                    </Button>
+
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleBuyProduct(product.id)}
+                    >
+                      Buy Now
+                    </Button>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 

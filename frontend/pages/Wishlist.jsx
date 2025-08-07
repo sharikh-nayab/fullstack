@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../src/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Alert
+} from "react-bootstrap";
 
 function Wishlist() {
   const { token } = useAuth();
@@ -16,9 +24,7 @@ function Wishlist() {
   const fetchWishlist = async () => {
     try {
       const response = await fetch("http://localhost:5000/wishlist", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       const data = await response.json();
@@ -80,11 +86,7 @@ function Wishlist() {
       if (response.ok) {
         setMessage("Product purchased and invoice generated!");
         setWishlistItems(prev => prev.filter(item => item.id !== productId));
-        
-        // ✅ Redirect to orders after short delay
-        setTimeout(() => {
-          navigate("/orders");
-        }, 1000);
+        setTimeout(() => navigate("/orders"), 1000);
       } else {
         setError(data.error || "Failed to buy product");
       }
@@ -100,42 +102,40 @@ function Wishlist() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">My Wishlist</h1>
+    <Container className="my-5">
+      <h2 className="mb-4 text-center">My Wishlist</h2>
 
-      {message && <p className="text-green-600 mb-2">{message}</p>}
-      {error && <p className="text-red-500 mb-2">{error}</p>}
+      {message && <Alert variant="success">{message}</Alert>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
       {wishlistItems.length === 0 ? (
-        <p className="text-gray-600">Your wishlist is empty.</p>
+        <p className="text-muted text-center">Your wishlist is empty.</p>
       ) : (
-        <ul className="space-y-4">
-          {wishlistItems.map((item) => (
-            <li key={item.id} className="p-4 border rounded shadow">
-              <h2 className="text-lg font-semibold">{item.name}</h2>
-              <p className="text-gray-600">{item.description}</p>
-              <p className="text-green-600 font-bold">₹{item.price}</p>
-
-              <div className="flex gap-4 mt-3">
-                <button
-                  onClick={() => handleRemove(item.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                >
-                  ❌ Remove
-                </button>
-
-                <button
-                  onClick={() => handleBuyNow(item.id)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  🛒 Buy Now
-                </button>
-              </div>
-            </li>
+        <Row className="g-4">
+          {wishlistItems.map(item => (
+            <Col md={6} lg={4} key={item.id}>
+              <Card className="shadow-sm h-100">
+                <Card.Body>
+                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Text>{item.description}</Card.Text>
+                  <Card.Text className="text-success fw-bold">
+                    ₹{item.price}
+                  </Card.Text>
+                  <div className="d-flex gap-2">
+                    <Button variant="danger" onClick={() => handleRemove(item.id)}>
+                      ❌ Remove
+                    </Button>
+                    <Button variant="primary" onClick={() => handleBuyNow(item.id)}>
+                      🛒 Buy Now
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
-        </ul>
+        </Row>
       )}
-    </div>
+    </Container>
   );
 }
 

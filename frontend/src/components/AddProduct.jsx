@@ -1,6 +1,12 @@
-// components/AddProduct.jsx
 import { useState } from 'react';
 import { apiFetch } from '../utils/api';
+import {
+  Container,
+  Form,
+  Button,
+  Card,
+  Alert
+} from 'react-bootstrap';
 
 function AddProduct() {
   const [name, setName] = useState('');
@@ -22,59 +28,64 @@ function AddProduct() {
       body: JSON.stringify(newProduct),
     })
       .then((data) => {
-      setMessage(data.message || 'Product added!');
-      setName('');
-      setPrice('');
-      setDescription('');
-    })
+        setMessage(data.message || 'Product added!');
+        setName('');
+        setPrice('');
+        setDescription('');
+      })
       .catch((err) => {
-      console.error(err);
-      setMessage('Error adding product');
-     });
+        console.error(err);
+        setMessage('Error adding product');
+      });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow space-y-4">
-      {message && <p className="text-green-600">{message}</p>}
-      
-      <div>
-        <label className="block font-semibold">Name:</label>
-        <input
-          className="w-full border px-3 py-2 rounded"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
+    <Container className="my-5">
+      <Card className="p-4 shadow-sm">
+        <h2 className="mb-4 text-center">Add New Product</h2>
 
-      <div>
-        <label className="block font-semibold">Price:</label>
-        <input
-          className="w-full border px-3 py-2 rounded"
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
-      </div>
+        {message && <Alert variant="info">{message}</Alert>}
 
-      <div>
-        <label className="block font-semibold">Description:</label>
-        <textarea
-          className="w-full border px-3 py-2 rounded"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={name}
+              placeholder="Product name"
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Add Product
-      </button>
-    </form>
+          <Form.Group className="mb-3">
+            <Form.Label>Price (₹)</Form.Label>
+            <Form.Control
+              type="number"
+              value={price}
+              placeholder="Enter price"
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={description}
+              placeholder="Product description"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Form.Group>
+
+          <Button type="submit" variant="primary" className="w-100">
+            Add Product
+          </Button>
+        </Form>
+      </Card>
+    </Container>
   );
 }
 

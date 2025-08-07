@@ -8,38 +8,6 @@ from reportlab.pdfgen import canvas
 
 invoices_bp = Blueprint("invoices", __name__)
 
-@invoices_bp.route("/invoice", methods=["POST"])
-@jwt_required()
-def generate_invoice():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    order_id = data.get("order_id")
-    total = data.get("total")
-
-    if not order_id or not total:
-        return jsonify({"error": "Order ID and total are required"}), 400
-
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-
-        # Insert into invoice table (one per order)
-        cur.execute("""
-            INSERT INTO invoices (user_id, order_id, total)
-            VALUES (%s, %s, %s)
-            RETURNING id
-        """, (user_id, order_id, total))
-
-        invoice_id = cur.fetchone()[0]
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return jsonify({"message": "Invoice created", "invoice_id": invoice_id}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @invoices_bp.route("/invoices", methods=["GET"])
 @jwt_required()
 def get_invoices():
@@ -77,7 +45,7 @@ def get_invoices():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@invoices_bp.route("/invoice/<int:invoice_id>/pdf", methods=["GET"])
+@invoices_bp.route("/invoices/<int:invoice_id>/pdf", methods=["GET"])
 def download_invoice(invoice_id):
     try:
         conn = get_connection()

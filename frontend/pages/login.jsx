@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../src/context/AuthContext";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Alert,
+  Card
+} from "react-bootstrap";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // custom login from AuthContext
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,16 +25,14 @@ function Login() {
     try {
       const response = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        login(data.access_token); // ✅ Save token globally
+        login(data.access_token);
         navigate("/dashboard");
       } else {
         setError(data.error || "Login failed");
@@ -38,44 +45,40 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-red-100 p-8 rounded shadow-md w-96"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+    <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh" }}>
+      <Card className="p-4 shadow" style={{ width: "100%", maxWidth: "400px" }}>
+        <h2 className="mb-4 text-center">Login to MyShop</h2>
 
-        {error && (
-          <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">
-            {error}
-          </div>
-        )}
+        {error && <Alert variant="danger">{error}</Alert>}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          className="w-full mb-4 p-2 border rounded"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <Form onSubmit={handleLogin}>
+          <Form.Group className="mb-3">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          className="w-full mb-4 p-2 border rounded"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <Form.Group className="mb-4">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Login
-        </button>
-      </form>
+          <Button variant="dark" type="submit" className="w-100">
+            Login
+          </Button>
+        </Form>
+      </Card>
     </div>
   );
 }
