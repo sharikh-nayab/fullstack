@@ -10,21 +10,24 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/users', methods=['GET'])
 @jwt_required()
 def list_users():
-    """
-    Returns all registered users (id, username, email).
-    Protected: only accessible with a valid JWT.
-    """
     conn = get_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT id, username, email FROM users;")
+        # include created_at so the front-end can render it
+        cur.execute("SELECT id, username, email, created_at FROM users;")
         rows = cur.fetchall()
     conn.close()
 
     users = [
-        {"id": u[0], "username": u[1], "email": u[2]}
+        {
+          "id": u[0],
+          "username": u[1],
+          "email": u[2],
+          "created_at": u[3].isoformat()
+        }
         for u in rows
     ]
-    return jsonify(users), 200
+    # wrap in an object with key "users"
+    return jsonify(users=users), 200
 
 @auth_bp.route('/register', methods=['POST'])
 def register():

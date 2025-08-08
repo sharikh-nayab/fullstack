@@ -100,32 +100,3 @@ def remove_from_wishlist():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@wishlist_bp.route("/orders", methods=["POST"])
-@jwt_required()
-def buy_product():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    product_id = data.get("product_id")
-
-    if not product_id:
-        return jsonify({"error": "Product ID is required"}), 400
-
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-
-        cur.execute("""
-            INSERT INTO orders (user_id, product_id)
-            VALUES (%s, %s)
-        """, (user_id, product_id))
-
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return jsonify({"message": "Product purchased successfully"}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
