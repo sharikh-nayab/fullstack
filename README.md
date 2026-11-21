@@ -1,13 +1,4 @@
-Here is your **updated `README.md`** with all requested changes:
-
-* ✅ Added a new **Architecture Overview** section (with diagram)
-* ✅ Removed repetitive content (Docker setup, ports, etc.)
-* ✅ Clean, professional structure
-
----
-
-```markdown
-# 📟 Fullstack Product Manager App
+# Fullstack Product Manager App
 
 A production-ready fullstack web application for managing products using:
 
@@ -18,7 +9,7 @@ A production-ready fullstack web application for managing products using:
 
 ---
 
-## 🛠️ Features
+## Features
 
 * View all products
 * Add a new product
@@ -31,7 +22,7 @@ A production-ready fullstack web application for managing products using:
 
 ---
 
-## 👰 Tech Stack
+## Tech Stack
 
 | Layer         | Tech                        |
 | ------------- | --------------------------- |
@@ -44,11 +35,11 @@ A production-ready fullstack web application for managing products using:
 
 ---
 
-## 🧱 Architecture Overview
+## Architecture Overview
 
 This fullstack app follows a **3-tier architecture** pattern, with clear separation between the frontend, backend, and database layers. It is designed for modularity, security, and ease of deployment via Docker.
 
-### 🔄 High-Level Flow
+### High-Level Flow
 
 ```
 
@@ -65,7 +56,7 @@ v
 ````
 
 
-### 📦 Component Breakdown
+### Component Breakdown
 
 #### 1. **Frontend**
 - **Path**: `frontend/`
@@ -85,14 +76,14 @@ v
 - **Tools**: PostgreSQL, Bash, SQL scripts
 - **Purpose**: Persistent storage of product and user data
 
-#### 🐳 Docker Orchestration
+#### Docker Orchestration
 - Managed by `docker-compose.yml`
 - Spins up: frontend + backend + database
 - No local setup needed if Docker is used
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 
@@ -152,7 +143,7 @@ npm run dev
 
 ---
 
-## 🐳 Run with Docker (Optional)
+## Run with Docker (Optional)
 
 ```bash
 # From the project root
@@ -176,7 +167,7 @@ docker-compose down
 
 ---
 
-## 📁 Folder Structure (High-Level)
+## Folder Structure (High-Level)
 
 ```
 fullstack/
@@ -190,7 +181,7 @@ fullstack/
 
 ---
 
-## ✅ Example Environment File (.env)
+## Example Environment File (.env)
 
 ```env
 DB_NAME=productdb
@@ -206,7 +197,7 @@ ADMIN_PASS=adminpassword
 
 ---
 
-## 🧠 Tips
+## Tips
 
 * Backend and DB scripts are **idempotent** – safe to rerun
 * `setup_db.sh` ensures schema and seed data are consistent
@@ -215,10 +206,6 @@ ADMIN_PASS=adminpassword
 
 ---
 
-## 🤛 Contributors
+## Contributors
 
 **Sharikh Nayab** [@sharikh-nayab](https://github.com/sharikh-nayab)
-Pull requests, issues, and feedback are welcome!
-
-
-```
